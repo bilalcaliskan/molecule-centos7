@@ -1,0 +1,14 @@
+---
+
+services: docker
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+
+script:
+  - docker build -t molecule-centos7:latest .
+  - docker run --name test-container -d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro molecule-centos7
+  - docker exec --tty test-container env TERM=xterm ansible --version
+
+...
