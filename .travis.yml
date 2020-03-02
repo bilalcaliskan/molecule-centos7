@@ -2,6 +2,8 @@
 
 services: docker
 
+env:
+  - VERSION="1.0"
 before_install:
   - sudo apt-get update
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
@@ -10,13 +12,14 @@ before_install:
 script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - GIT_COMMIT=$(git rev-parse HEAD | cut -c 1-11)
-  - echo $GIT_COMMIT
-  - docker build -t $DOCKER_USERNAME/molecule-centos7:$GIT_COMMIT .
+  - echo "git commit id = $GIT_COMMIT"
+  - echo "version = $VERSION"
+  - docker build -t $DOCKER_USERNAME/molecule-centos7:$VERSION-$GIT_COMMIT .
   - docker images
-  - docker run --name test-container -d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro $DOCKER_USERNAME/molecule-centos7:$GIT_COMMIT
+  - docker run --name test-container -d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro $DOCKER_USERNAME/molecule-centos7:$VERSION-$GIT_COMMIT
   - docker exec --tty test-container env TERM=xterm ansible --version
-  - docker push $DOCKER_USERNAME/molecule-centos7:$GIT_COMMIT
-  - docker tag $DOCKER_USERNAME/molecule-centos7:$GIT_COMMIT $DOCKER_USERNAME/molecule-centos7:latest
+  - docker push $DOCKER_USERNAME/molecule-centos7:$VERSION-$GIT_COMMIT
+  - docker tag $DOCKER_USERNAME/molecule-centos7:$VERSION-$GIT_COMMIT $DOCKER_USERNAME/molecule-centos7:latest
   - docker push $DOCKER_USERNAME/molecule-centos7:latest
 if: branch == master
 
