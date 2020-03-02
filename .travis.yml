@@ -6,9 +6,19 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
-script:
-  - docker build -t molecule-centos7:latest .
-  - docker run --name test-container -d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro molecule-centos7
-  - docker exec --tty test-container env TERM=xterm ansible --version
+jobs:
+  include:
+    - stage: build
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t $DOCKER_USERNAME/molecule-centos7:latest .
+        - docker images
+    - stage: test
+      script:
+        - docker run --name test-container -d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro molecule-centos7
+        - docker exec --tty test-container env TERM=xterm ansible --version
+    - stage: push
+      script:
+        - docker push $DOCKER_USERNAME/molecule-centos7:latest
 
 ...
