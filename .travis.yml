@@ -9,17 +9,15 @@ before_install:
 
 jobs:
   include:
-    - stage: build
+    - stage: build and push docker image
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t $DOCKER_USERNAME/molecule-centos7:latest .
         - docker images
-    - stage: test
-      script:
         - docker run --name test-container -d --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro $DOCKER_USERNAME/molecule-centos7:latest
         - docker exec --tty test-container env TERM=xterm ansible --version
-    - stage: push
-      script:
         - docker push $DOCKER_USERNAME/molecule-centos7:latest
+      if:
+        - branch = master
 
 ...
