@@ -19,8 +19,7 @@ RUN yum makecache fast \
         which \
         python-pip \
     && yum clean all
-RUN pip install --upgrade pip \
-    && pip install ansible
+RUN pip install --upgrade pip ansible
 RUN sed -i -e 's/^\(Defaults\s*requiretty\)/#--- \1/'  /etc/sudoers
 RUN mkdir -p /etc/ansible
 RUN echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts
