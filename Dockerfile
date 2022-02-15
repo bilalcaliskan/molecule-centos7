@@ -1,6 +1,7 @@
 FROM centos:7
 
 ENV container=docker
+ENV pip_packages "ansible==2.9.16"
 
 RUN yum -y update; yum clean all; \
 (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
@@ -19,7 +20,7 @@ RUN yum makecache fast \
         which \
         python-pip \
     && yum clean all
-RUN pip install --upgrade pip ansible
+RUN pip install --upgrade pip ansible && pip install $pip_packages
 RUN sed -i -e 's/^\(Defaults\s*requiretty\)/#--- \1/'  /etc/sudoers
 RUN mkdir -p /etc/ansible
 RUN echo -e '[local]\nlocalhost ansible_connection=local' > /etc/ansible/hosts

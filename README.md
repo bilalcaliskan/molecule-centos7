@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/bilalcaliskan/molecule-centos7/workflows/Build/badge.svg?branch=master&event=push)](https://github.com/bilalcaliskan/molecule-centos7/actions?query=workflow%3ABuild)
 [![Docker pulls](https://img.shields.io/docker/pulls/bilalcaliskan/molecule-centos7)](https://hub.docker.com/r/bilalcaliskan/molecule-centos7/)
+[![GitHub tag](https://img.shields.io/github/tag/bilalcaliskan/molecule-centos7.svg)](https://GitHub.com/bilalcaliskan/molecule-centos7/tags/)
 
 CentOS 7 Docker container for Ansible playbook and role testing.
 
