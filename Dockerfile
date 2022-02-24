@@ -1,6 +1,6 @@
 FROM centos:7
 
-MAINTAINER bilalcaliskan
+LABEL maintainer="bilalcaliskan"
 ENV container=docker
 ENV YUM_PACKAGES "sudo which openssl-devel libffi-devel bzip2-devel wget"
 ENV PIP_PACKAGES "pip ansible==2.9.16"
