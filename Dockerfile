@@ -2,7 +2,8 @@ FROM centos:7
 
 MAINTAINER bilalcaliskan
 ENV container=docker
-ENV yum_packages "sudo which openssl-devel libffi-devel bzip2-devel wget"
+ENV YUM_PACKAGES "sudo which openssl-devel libffi-devel bzip2-devel wget"
+ENV PIP_PACKAGES "pip ansible==2.9.16"
 
 RUN yum -y update; yum clean all; \
     (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
@@ -17,7 +18,7 @@ RUN yum makecache fast \
     && yum groupinstall -y "Development Tools" \
     && yum install -y deltarpm epel-release initscripts \
     && yum update -y \
-    && yum install -y $yum_packages \
+    && yum install -y $YUM_PACKAGES \
     && yum clean all
 
 WORKDIR /opt
@@ -27,8 +28,9 @@ WORKDIR /opt/Python-3.9.10
 RUN ./configure --enable-optimizations
 RUN make altinstall
 RUN ln -s /usr/local/bin/python3.9 /usr/bin/python3
-RUN python3 -m pip install --upgrade pip \
-    && python3 -m pip install --upgrade ansible==2.9.16
+#RUN python3 -m pip install --upgrade $PIP_PACKAGES \
+#    && python3 -m pip install --upgrade 
+RUN python3 -m pip install --upgrade $PIP_PACKAGES
 
 WORKDIR /root
 RUN sed -i -e 's/^\(Defaults\s*requiretty\)/#--- \1/'  /etc/sudoers
